@@ -1,10 +1,7 @@
-import logging
-
 from flask import Flask
 from flask import request, jsonify
 
 
-log = logging.getLogger(__name__)
 app = Flask(__name__)
 
 
@@ -20,10 +17,6 @@ def validate_post_data(data: dict) -> bool:
 
 @app.route('/', methods=['GET'])
 def hello():
-    """
-    Print "hello world" on main page
-    :return:
-    """
     return 'Hello World!'
 
 
