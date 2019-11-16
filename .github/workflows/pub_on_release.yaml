@@ -1,0 +1,47 @@
+name: Publish on Docker Hub and Deploy
+
+on:
+  release:
+    types: [published]
+  # Запуск только при публиковании нового релиза
+
+jobs:
+  run_tests:
+    # Первую джобу смело можем копипастить из экшена для тестирования
+    runs-on: [ubuntu-latest]
+    steps:
+      # Чекаутим код
+      - uses: actions/checkout@master
+      # Устанавливаем python нужной версии
+      - uses: actions/setup-python@v1
+        with:
+          python-version: '3.8'
+          architecture: 'x64'
+      - name: Install requirements
+        # Устанавливаем зависимости
+        run: pip install -r requirements.txt
+      - name: Run tests
+        # Запускаем тесты
+        run: coverage run src/tests.py
+      - name: Tests report
+        run: coverage report
+
+  build_and_pub:
+    # Если тесты были пройдены успешно
+    needs: [run_tests]
+    runs-on: [ubuntu-latest]
+    env:
+      LOGIN: ${{ secrets.DOCKER_LOGIN }}
+      NAME: ${{ secrets.DOCKER_NAME }}
+    steps:
+      - name: Login to docker.io
+        # Сначала мы логинимся в docker.io
+        run:  echo ${{ secrets.DOCKER_PWD }} | docker login -u ${{ secrets.DOCKER_LOGIN }} --password-stdin
+        # Чекаутим код
+      - uses: actions/checkout@master
+      - name: Build image
+        # Собираем image и называем его так как указано в hub.docker т.е. login/repository:version
+        run: docker build -t $LOGIN/$NAME:${GITHUB_REF:11} -f Dockerfile .
+      - name: Push image to docker.io
+        # Пушим образ в registry
+        run: docker push $LOGIN/$NAME:${GITHUB_REF:11}
