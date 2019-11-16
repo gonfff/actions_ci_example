@@ -1,0 +1,12 @@
+[Unit]
+Description=Deployment web server
+After=network-online.target
+
+[Service]
+Type=simple
+RestartSec=3
+ExecStart=/usr/local/bin/ci_example
+Environment=CI_TOKEN=#<I generate it with $(openssl rand -hex 20)>
+
+[Install]
+WantedBy=multi-user.target
