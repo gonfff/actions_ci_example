@@ -15,6 +15,7 @@ app = Flask(__name__)
 docker_client = docker.from_env()
 MY_AUTH_TOKEN = os.getenv('CI_TOKEN', None)  # Берем наш токен из переменной окружения
 
+
 def init_logging():
     """
     Инициализация логгера
