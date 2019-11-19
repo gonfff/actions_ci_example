@@ -11,7 +11,7 @@ class FlaskAppTests(unittest.TestCase):
 
     def test_get_hello_endpoint(self):
         r = self.app.get('/')
-        self.assertEqual(r.data, b'Hello World!')
+        self.assertEqual(r.data, b'Hello Wo    rld!')
 
     def test_post_hello_endpoint(self):
         r = self.app.post('/')
@@ -30,7 +30,7 @@ class FlaskAppTests(unittest.TestCase):
 
         r = self.app.post('/api',
                           content_type='application/json',
-                          data=json.dumps({'name': 'De n'}))
+                          data=json.dumps({'name': 'Den'}))
         self.assertEqual(r.json, {'status': 'OK'})
         self.assertEqual(r.status_code, 200)
 
